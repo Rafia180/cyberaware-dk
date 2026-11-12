@@ -1,0 +1,5 @@
+# The packages the website needs to run.
+# The "==" pins an exact version, so the site behaves the same on every
+fastapi==0.142.4
+uvicorn[standard]==0.53.0
+jinja2==3.1.6

@@ -1,0 +1,85 @@
+{# =====================================================================
+   index.html - the Home page
+   ---------------------------------------------------------------------
+   This file only fills in the middle of the page. The header, menu,
+   disclaimer strip and footer all come from base.html.
+
+   Jinja2 notes (the template language FastAPI uses):
+     curly brace + percent sign      is an instruction, e.g. extends or block
+     double curly braces             prints a value onto the page
+     curly brace + hash sign         is a comment, like this one. It is
+                                     removed before the page is sent.
+   (The symbols are spelled out in words here because writing them
+   inside a comment would confuse Jinja.)
+   ===================================================================== #}
+
+{# "extends" means: start from base.html, then swap in the blocks below. #}
+{% extends "base.html" %}
+
+{# This text appears on the browser tab. #}
+{% block title %}CyberAware DK - Stay safer online in Denmark{% endblock %}
+
+{% block content %}
+
+<!-- =================================================================
+     1) The hero: the big coloured panel at the top of the page.
+     It says who the site is for and gives two buttons to start.
+     ================================================================= -->
+<section class="hero">
+    <!-- The small red label above the heading -->
+    <p class="eyebrow">FOR INTERNATIONAL STUDENTS IN DENMARK</p>
+
+    <h1>Learn to spot a scam before it costs you</h1>
+
+    <p class="lead">
+        Scammers copy MitID, your bank, your landlord and Danish
+        authorities. This site shows you what those messages look like and
+        what to do about them. Every example is invented for learning.
+    </p>
+
+    <!-- Two buttons side by side. They are ordinary links (<a>) that
+         are styled to look like buttons in style.css. -->
+    <div class="hero-actions">
+        <a class="button button-primary" href="/learn">Learn about scams</a>
+        <a class="button button-secondary" href="/get-help">Get help now</a>
+    </div>
+</section>
+
+<!-- =================================================================
+     2) Stop - Check - Ask
+     A plain numbered list (<ol>). We do NOT type the numbers 1, 2, 3
+     ourselves: style.css draws the numbered circles automatically using
+     a "CSS counter", so the list stays simple here.
+     ================================================================= -->
+<section class="steps-section">
+    <h2>Three steps that work for every scam</h2>
+    <ol class="steps">
+        <li>
+            <h3>Stop</h3>
+            <p>Do not click, pay or approve anything yet. Nothing genuine
+               falls apart because you waited ten minutes.</p>
+        </li>
+        <li>
+            <h3>Check</h3>
+            <p>Open the organisation's own app or website yourself. Never
+               use the link or phone number you were sent.</p>
+        </li>
+        <li>
+            <h3>Ask</h3>
+            <p>Tell a friend, classmate or your university. Scammers count
+               on you deciding alone and quickly.</p>
+        </li>
+    </ol>
+</section>
+
+<!-- =================================================================
+     3) Privacy notice: the pink box at the bottom.
+     It reminds the reader never to type real personal details here.
+     ================================================================= -->
+<div class="notice-box home-notice">
+    <strong>This site never asks for your details.</strong> Do not enter
+    real passwords, MitID codes, CPR numbers or bank details here or
+    anywhere you did not go to yourself.
+</div>
+
+{% endblock %}

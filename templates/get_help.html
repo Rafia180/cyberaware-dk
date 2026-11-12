@@ -1,0 +1,76 @@
+{# =====================================================================
+   get_help.html - the Get Help page
+   It receives from main.py:
+     steps     - the seven emergency steps (EMERGENCY_STEPS)
+     channels  - the official contacts (HELP_CHANNELS)
+
+   The layout follows simple government help pages: a short heading,
+   then the steps in one card (click a step to open it), then one small
+   card per contact. No tables, so it works the same on a phone as on
+   a computer.
+   ===================================================================== #}
+{% extends "base.html" %}
+{% block title %}Get Help - CyberAware DK{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <h1>Get help</h1>
+    <p class="lead">
+        Think you have been scammed? Follow these steps in order.
+        It is not your fault, and acting quickly helps.
+    </p>
+</header>
+
+<!-- =================================================================
+     1) The steps, in one white card. It reuses the "rules-card" style
+     from the Learn page, so both pages look the same. style.css draws
+     the numbers, so this stays a plain numbered list (<ol>).
+     ================================================================= -->
+<section class="rules-card steps-card" aria-labelledby="steps-heading">
+    <h2 id="steps-heading">What to do now</h2>
+    <p class="rules-intro">Work through these seven steps in order. Select a step to read what to do.</p>
+    {# Same list style as the rules on the Learn page ("rules-list").
+       Each step is a <details>: the title shows, and the text opens
+       when it is clicked. loop.first is true only for step 1, so
+       "Stop" starts open and the reader sees an example right away. #}
+    <ol class="rules-list">
+        {% for step in steps %}
+        <li>
+            <details {% if loop.first %}open{% endif %}>
+                <summary>{{ step.title }}</summary>
+                <p>{{ step.text }}</p>
+            </details>
+        </li>
+        {% endfor %}
+    </ol>
+</section>
+
+<!-- =================================================================
+     2) Who to contact: one card per organisation.
+     Cards sit one per row on a phone, and two or three per row on
+     wider screens (see section 9 of style.css).
+     ================================================================= -->
+<section class="section-block" aria-labelledby="contacts-heading">
+    <h2 id="contacts-heading">Who to contact</h2>
+    <p class="lead">Find your situation. Every organisation here is real and official.</p>
+
+    <div class="contact-grid">
+        {# One card for each contact in HELP_CHANNELS #}
+        {% for channel in channels %}
+        <article class="contact-card">
+            <h3>{{ channel.problem }}</h3>
+            <p class="contact-name">{{ channel.contact }}</p>
+            <p class="contact-note">{{ channel.note }}</p>
+            {# "if" shows the link only when the contact has a website #}
+            {% if channel.url %}
+            <a class="contact-link" href="{{ channel.url }}" target="_blank" rel="noopener">{{ channel.label }}</a>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+    {# Contact details change. Re-check them before you hand in, and
+       update this date. #}
+    <p class="help-checked">Contact details checked October 2026.</p>
+</section>
+
+{% endblock %}

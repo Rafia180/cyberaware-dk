@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{# ====================================================================
+   base.html - the shared frame around every page.
+
+   The header, menu, disclaimer strip and footer are written ONCE, here.
+   Every other template begins with an "extends base.html" line and only
+   fills in two gaps, called blocks: "title" and "content".
+
+   Comments written like this one are Jinja comments: they are removed
+   before the page is sent, so visitors never see them.
+   ==================================================================== #}
+<!-- lang="en" tells screen readers and translators the page is English -->
+<html lang="en">
+<head>
+    <!-- UTF-8 lets the page show any character, including æ, ø and å -->
+    <meta charset="UTF-8">
+    <!-- Makes phones show the page at its real size instead of zoomed out -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Each page can replace this title with its own (see index.html) -->
+    <title>{% block title %}CyberAware DK{% endblock %}</title>
+    <!-- The "?v=1" on the end makes browsers download the new file instead
+         of reusing an old saved copy. Increase the number whenever you
+         change style.css (v=2, v=3 ...). -->
+    <link rel="stylesheet" href="/static/css/style.css?v=5">
+    <!-- A small inline icon for the browser tab. This is drawn with SVG
+         inside the page itself, so there is no icon file to add and the
+         browser stops asking the server for /favicon.ico. -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e3a4c'/%3E%3Cpath d='M16 6l8 3v7c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V9l8-3z' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%23ff8fa3' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+</head>
+<body>
+    <!-- Hidden until a keyboard user presses Tab. It lets them jump past
+         the menu straight to the page content (an accessibility feature). -->
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="/">CyberAware<span>DK</span></a>
+
+            <!-- The "Menu" button only appears on phones (see style.css).
+                 main.js opens and closes the menu when it is clicked.
+                 aria-expanded tells screen readers if the menu is open. -->
+            <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+                Menu
+            </button>
+
+            <!-- aria-current marks the page you are on, so it can be
+                 highlighted and screen readers announce "current page". -->
+            {# Save the current address (e.g. "/learn") in a variable
+               called "path", so each link below can check it. #}
+            {% set path = request.url.path %}
+            <nav class="site-nav" id="site-nav" aria-label="Main">
+                <a href="/" {% if path == "/" %}aria-current="page"{% endif %}>Home</a>
+                <a href="/learn" {% if path.startswith("/learn") %}aria-current="page"{% endif %}>Learn</a>
+                <a href="/get-help" {% if path == "/get-help" %}aria-current="page"{% endif %}>Get Help</a>
+                <a href="/about" {% if path == "/about" %}aria-current="page"{% endif %}>About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- The thin strip under the header, shown on every page -->
+    <div class="disclaimer-banner">
+        <div class="container">
+            All examples on this site are <strong>fictional</strong> and for learning only.
+            This site does not analyse or verify real messages.
+        </div>
+    </div>
+
+    <!-- Each page's own content is placed here -->
+    <main id="main-content" class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer: two columns on a computer (about the site on the left,
+         urgent help on the right), stacked on a phone.
+         There is no list of site links here, because the menu at the
+         top of every page already does that job. -->
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <p class="footer-logo">CyberAware<span>DK</span></p>
+                <p class="footer-tagline">
+                    Helping international students in Denmark recognise
+                    social engineering scams and respond safely, using
+                    fictional examples only.
+                </p>
+            </div>
+
+            <nav class="footer-col" aria-label="Urgent help">
+                <h3>Urgent help</h3>
+                <ul>
+                    <li><strong>Cyberhotline: 33 37 00 37</strong><br>
+                        <span class="footer-small">Weekdays 08:00&ndash;20:00,
+                        weekends 10:00&ndash;16:00</span></li>
+                    <li><a href="https://politi.dk/anmeld-kriminalitet/digital-kriminalitet/anmeld-oekonomisk-svindel-paa-nettet-og-digital-kriminalitet" target="_blank" rel="noopener">Report fraud to the Danish Police</a></li>
+                    <li><a href="https://www.mitid.dk/sikkerhed/phishing/" target="_blank" rel="noopener">MitID security guidance</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>&copy; 2026 CyberAware DK &middot; An educational BSc Computer Science final year project.</p>
+                <p>Not affiliated with MitID, SKAT, SIRI, the police, or any bank. All examples are fictional.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- The scripts go last, so the page shows first and the scripts
+         run once everything above them exists. -->
+    <script src="/static/js/main.js?v=1"></script>
+</body>
+</html>

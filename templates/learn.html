@@ -1,0 +1,74 @@
+{# =====================================================================
+   learn.html - the Learn page
+   It receives from main.py:
+     rules   - the eight rules (CORE_RULES in content.py)
+     topics  - the five topics (TOPICS in content.py)
+   ===================================================================== #}
+{% extends "base.html" %}
+{% block title %}Learn about scams - CyberAware DK{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <h1>Learn about scams</h1>
+    {# topics|length counts the topics, so this number is always right #}
+    <p class="lead">
+        {{ topics|length }} main kinds of scam. Each one gives a plain-English
+        explanation, invented examples, the warning signs, what to do, and
+        where to get official help.
+    </p>
+</header>
+
+<!-- The topic cards. With only five there is no need for groups or
+     filter buttons: they all fit on one screen. -->
+<section class="topics-section" aria-labelledby="topics-heading">
+    <h2 id="topics-heading">Choose a topic</h2>
+
+    <div class="card-grid topic-grid">
+        {# One clickable card per topic #}
+        {% for topic in topics %}
+        <a class="card" href="/learn/{{ topic.slug }}">
+            <h3>{{ topic.title }}</h3>
+            <p>{{ topic.short }}</p>
+            {# "covers" lists the names a reader might be looking for #}
+            <p class="card-covers">Covers: {{ topic.covers }}</p>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- The eight rules that defeat almost every scam. They come AFTER the
+     topics, because choosing a topic is the main job of this page. The
+     rules are a short summary to finish with. -->
+<div class="learn-intro">
+    <section class="rules-card">
+        <h2>If you remember nothing else</h2>
+        <p class="rules-intro">
+            Almost every scam breaks at least one of these eight rules.
+            Select a rule to read why.
+        </p>
+        <!-- <details> opens and closes without any JavaScript, which keeps
+             the eight rules short until someone wants the full reason. -->
+        <ol class="rules-list">
+            {# A "for" loop: repeat the <li> once for every rule #}
+            {% for rule in rules %}
+            <li>
+                <details>
+                    <summary>{{ rule.title }}</summary>
+                    <p>{{ rule.text }}</p>
+                </details>
+            </li>
+            {% endfor %}
+        </ol>
+    </section>
+</div>
+
+<div class="callout-help">
+    <p>
+        <strong>Has something already happened?</strong>
+        If you think you have given something away or lost money, go to
+        <a href="/get-help">Get help</a>. It has the steps to take and the
+        numbers to call.
+    </p>
+</div>
+
+{% endblock %}

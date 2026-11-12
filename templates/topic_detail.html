@@ -1,0 +1,98 @@
+{# =====================================================================
+   topic_detail.html - one topic, e.g. /learn/mitid-scams
+   It receives from main.py:
+     topic  - one dictionary from TOPICS in content.py
+   topic['title'] means "the title value inside the topic dictionary".
+   ===================================================================== #}
+{% extends "base.html" %}
+{% block title %}{{ topic['title'] }} - CyberAware DK{% endblock %}
+{% block content %}
+
+{# The "Learn > Topic" trail at the top, so the reader knows where they are #}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/learn">Learn</a> &rsaquo; {{ topic['title'] }}
+</nav>
+
+<h1>{{ topic['title'] }}</h1>
+
+<!-- Row 1: what it is and an example on the left, warning signs on the
+     right, so the most important information fits on one screen. -->
+<div class="topic-layout">
+    <div class="topic-main">
+        <section class="info-box">
+            <h2>What is it?</h2>
+            <p>{{ topic['definition'] }}</p>
+        </section>
+
+        <section class="example-box">
+            {# One box per invented example. Each has a label (how it arrived) #}
+            <h2>What it looks like</h2>
+            {% for example in topic['examples'] %}
+            <div class="example-item">
+                <p class="example-label">{{ example['label'] }}</p>
+                {# &ldquo; and &rdquo; are curly opening and closing quote marks #}
+                <p class="example-text">&ldquo;{{ example['text'] }}&rdquo;</p>
+            </div>
+            {% endfor %}
+            <p class="example-note">These examples are invented for teaching. They are not real messages.</p>
+        </section>
+    </div>
+
+    <section class="info-box flag-box">
+        <h2>Warning signs</h2>
+        <ul class="flag-list">
+            {% for flag in topic['red_flags'] %}
+            <li>{{ flag }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+
+<!-- Row 2: what to do and what not to do, side by side. -->
+<div class="two-col">
+    <section class="do-box">
+        <h2>What to do</h2>
+        <ul class="do-list">
+            {% for step in topic['do_steps'] %}
+            <li>{{ step }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="dont-box">
+        <h2>What not to do</h2>
+        <ul class="dont-list">
+            {% for step in topic['dont_steps'] %}
+            <li>{{ step }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+
+<p class="remember-line">
+    <strong>Remember:</strong> no genuine Danish authority, bank or
+    MitID will pressure you to act immediately, ask for a password or
+    code, or tell you to move money to a safer account.
+</p>
+
+<!-- Row 3: who can help and the official sources, side by side. -->
+<div class="two-col">
+    <section class="help-box">
+        <h2>Who can help</h2>
+        <p>{{ topic['help'] }}</p>
+        <a class="text-link" href="/get-help">See all official contacts &rarr;</a>
+    </section>
+
+    <section class="info-box sources-box">
+        <h2>Official sources</h2>
+        <ul class="channel-list">
+            {% for source in topic['sources'] %}
+            <li><a href="{{ source['url'] }}" target="_blank" rel="noopener">{{ source['label'] }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+
+<a class="button button-secondary" href="/learn">&larr; Back to all topics</a>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{# =====================================================================
+   about.html - the About page
+   Fixed text only, so main.py passes no data to it.
+   ===================================================================== #}
+{% extends "base.html" %}
+{% block title %}About this project - CyberAware DK{% endblock %}
+{% block content %}
+
+<h1>About this project</h1>
+
+<p class="lead">
+    CyberAware DK is an educational student project, submitted as part of
+    a BSc Computer Science final year project.
+</p>
+
+<section class="info-box">
+    <h2>What it is for</h2>
+    <p>
+        It helps international students in Denmark recognise common social
+        engineering scams. Social engineering means tricking a person
+        rather than breaking into a computer system, and it covers fake
+        emails, text messages and calls, but also fraudulent rental
+        adverts, fake job offers and impersonation of Danish authorities.
+    </p>
+    <p>
+        The content is built around Danish services by name, including
+        MitID, SKAT, Digital Post and the Immigration Service, because
+        that is what the most convincing scams in Denmark imitate.
+    </p>
+</section>
+
+<section class="info-box">
+    <h2>What it does not do</h2>
+    <p>
+        It is a learning resource, not a scam detector. It does not check
+        whether a message you received is genuine, and it never asks for
+        your information. It does not access your email, text messages,
+        passwords, bank accounts, CPR number, MitID or any other private
+        data.
+    </p>
+    <p>
+        This is a deliberate decision rather than a missing feature. An
+        automatic verdict on a real message could be wrong, and being
+        wrongly told a message is safe is more dangerous than having no
+        tool at all.
+    </p>
+</section>
+
+<section class="info-box">
+    <h2>Where the content comes from</h2>
+    <p>
+        Every example message is invented for teaching. None was copied
+        from a real victim or a real scam. Each topic reflects patterns
+        described in official Danish guidance, and each page links to the
+        sources it is based on so you can read them yourself.
+    </p>
+</section>
+
+{% endblock %}

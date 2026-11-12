@@ -1,0 +1,866 @@
+/* ==================================================================
+   CyberAware DK - stylesheet
+   ------------------------------------------------------------------
+   Organised top-to-bottom the way a browser reads a page:
+
+     1. Fonts and design tokens (colours, spacing, shadows)
+     2. Reset and base styles
+     3. Header, navigation and disclaimer strip
+     4. Page layout and typography
+     5. Shared components (buttons, cards, boxes, lists)
+     6. Home page
+     7. Learn page
+     8. Topic detail page
+     9. Get Help page
+    10. Footer
+    11. Responsive rules (tablet and mobile)
+
+   Everything is driven by the variables in :root. Change a value there
+   and it updates everywhere it is used.
+================================================================== */
+
+/* ------------------------------------------------------------------
+   1. Fonts and design tokens
+------------------------------------------------------------------- */
+
+/* A free Google Font. Without internet the browser silently falls back
+   to the system fonts in --font-body, so the site still works offline. */
+
+
+:root {
+  /* ":root" means the whole page. Values written here as --name are
+     "CSS variables". Anywhere below, var(--name) means "use that value".
+     Colours are written as hex codes: # then red, green, blue. */
+
+  /* Colours */
+  --color-bg: #f5f7f9;
+  --color-surface: #ffffff;
+  --color-text: #16232c;
+  --color-muted: #56646d;
+  --color-primary: #0e3a4c;         /* dark navy/teal - headings, brand */
+  --color-primary-dark: #092733;
+  --color-primary-soft: #eaf1f3;    /* light tint used for bands/boxes */
+  --color-teal: #2f6f83;            /* secondary brand accent */
+  --color-accent: #a51c30;          /* red accent - links, tags, warnings */
+  --color-accent-dark: #841522;
+  --color-accent-soft-bg: #fbe9ec;
+  --color-success: #2e7d4f;         /* green - "what to do" */
+  --color-success-dark: #1f5c39;
+  --color-success-bg: #edf7f0;
+  --color-warning-bg: #fdf3e2;      /* amber "remember this" callouts */
+  --color-warning-border: #c98a1a;
+  --color-warning-text: #6b4a08;
+  --color-border: #dde3e7;
+  --footer-bg: #0a2530;
+  --footer-text: rgba(255, 255, 255, 0.82);
+  --footer-text-muted: rgba(255, 255, 255, 0.55);
+  --footer-border: rgba(255, 255, 255, 0.12);
+
+  /* Spacing scale - tighter than before so pages need less scrolling */
+  --space-xs: 0.5rem;
+  --space-sm: 0.85rem;
+  --space-md: 1.25rem;
+  --space-lg: 1.75rem;
+  --space-xl: 2.5rem;
+
+  /* Shape and depth */
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(16, 34, 43, 0.07);
+  --shadow-md: 0 10px 28px rgba(16, 34, 43, 0.12);
+
+  --max-width: 1080px;
+  --font-body: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------------
+   2. Reset and base styles
+------------------------------------------------------------------- */
+/* "*" means every element. border-box makes width include padding and
+   border, so a box set to 300px wide really is 300px wide. */
+* { box-sizing: border-box; }
+
+/* The root size every "rem" is based on. 15px (instead of the browser's
+   16px) makes all text, padding and gaps slightly smaller together. */
+html { font-size: 93.75%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent-soft-bg);
+  color: var(--color-primary-dark);
+}
+
+/* Links take the colour of the text around them, unless a rule below
+   gives them their own colour. */
+a { color: inherit; }
+
+p { margin: 0 0 0.85rem; }
+p:last-child { margin-bottom: 0; }
+
+/* Anything with the "hidden" attribute is really hidden. !important
+   makes this win over any other rule. main.js relies on this. */
+[hidden] { display: none !important; }
+
+/* A consistent, visible focus ring for keyboard users */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Lets keyboard users jump straight past the header to the content */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--color-primary);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  z-index: 100;
+  border-radius: 0 0 6px 0;
+}
+.skip-link:focus { left: 0; }
+
+/* People who ask their computer to reduce motion get a calmer site */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   3. Header, navigation and disclaimer strip
+------------------------------------------------------------------- */
+/* .container keeps content from stretching across very wide screens.
+   "margin: 0 auto" centres it: 0 above and below, equal space left and
+   right. */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.site-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  position: sticky;   /* stays at the top of the screen while you scroll */
+  top: 0;
+  z-index: 20;        /* a higher z-index sits on top of lower ones */
+}
+/* Flexbox (display: flex) puts the children in a row. space-between
+   pushes the logo to the left and the menu to the right. */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+}
+.brand {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.brand span { color: var(--color-accent); }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.site-nav { display: flex; align-items: center; gap: 1.75rem; }
+.site-nav a {
+  position: relative;
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.25rem 0;
+  transition: color 0.15s ease;
+}
+/* An underline that grows in on hover, and stays on the current page */
+.site-nav a::after {
+  /* ::after creates an extra, invisible-in-HTML piece after the link.
+     Here it is a 2px red line. It starts with "right: 100%" (zero
+     width) and grows to "right: 0" (full width) on hover. */
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -2px;
+  height: 2px;
+  background: var(--color-accent);
+  transition: right 0.18s ease;
+}
+.site-nav a:hover,
+.site-nav a:focus-visible,
+.site-nav a[aria-current="page"] { color: var(--color-primary); }
+.site-nav a:hover::after,
+.site-nav a:focus-visible::after,
+.site-nav a[aria-current="page"]::after { right: 0; }
+
+.disclaimer-banner {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+  font-size: 0.88rem;
+  padding: 0.5rem 0;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+.disclaimer-banner .container::before {
+  content: "\26A0\FE0F";  /* warning-triangle emoji, no image needed */
+  margin-right: 0.4rem;
+}
+
+/* ------------------------------------------------------------------
+   4. Page layout and typography
+------------------------------------------------------------------- */
+/* "main.container" (not just "main") so this beats the .container rule,
+   which would otherwise reset the top and bottom padding to zero. */
+main.container {
+  padding: 2rem 1.25rem var(--space-xl);
+  min-height: 50vh;
+}
+
+h1, h2, h3, h4 { color: var(--color-primary); line-height: 1.25; }
+
+h1 {
+  font-size: 1.8rem;
+  margin: 0 0 0.5rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+h2 {
+  font-size: 1.2rem;
+  margin: 0 0 0.6rem;
+  font-weight: 700;
+}
+h3 { font-size: 1.02rem; margin: 0 0 0.4rem; font-weight: 700; }
+h4 { font-size: 1rem; margin: 0 0 0.3rem; font-weight: 700; }
+
+.lead {
+  font-size: 0.98rem;
+  color: var(--color-muted);
+  max-width: 68ch;
+}
+
+.page-head { margin-bottom: var(--space-lg); }
+
+.eyebrow {
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  background: var(--color-accent-soft-bg);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.9rem;
+}
+
+.section-block { margin-top: var(--space-xl); }
+
+.breadcrumb {
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+}
+.breadcrumb a {
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.breadcrumb a:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------------
+   5. Shared components
+------------------------------------------------------------------- */
+
+/* Buttons */
+.button {
+  display: inline-block;
+  margin-top: var(--space-md);
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.92rem;
+  transition: box-shadow 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
+}
+.button-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  border: 1px solid var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+.button-primary:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.button-secondary {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+.button-secondary:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--color-accent);
+  font-weight: 700;
+  text-decoration: none;
+  transition: gap 0.15s ease;
+}
+.text-link:hover { text-decoration: underline; color: var(--color-accent-dark); gap: 0.5rem; }
+
+/* Card grid and clickable topic cards */
+/* CSS Grid. "repeat(auto-fill, minmax(280px, 1fr))" means: fit as many
+   columns as there is room for, each at least 280px wide, and share any
+   spare space equally. So the topic cards show 3 per row on a computer,
+   2 on a tablet and 1 on a phone, with no media query needed. */
+.card-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-top: var(--space-sm);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.15rem;
+  text-decoration: none;
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  /* transition = animate these changes smoothly instead of jumping */
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+/* On hover, the card lifts 3px (translateY) and its shadow grows. */
+.card:hover, .card:focus-visible {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+.card h3 { margin: 0; font-size: 1.02rem; }
+.card p { margin: 0; font-size: 0.9rem; color: var(--color-muted); line-height: 1.5; }
+/* The "Covers: ..." line: the names a reader might be looking for */
+.card .card-covers {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* An arrow pinned to the bottom of the card that slides in on hover */
+.card::after {
+  content: "\2192";
+  align-self: flex-end;
+  margin-top: auto;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--color-primary);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.card:hover::after, .card:focus-visible::after { opacity: 1; transform: translateX(0); }
+
+/* Cards cycle through three accent colours so a grid feels varied.
+   nth-child(3n+2) means the 2nd, 5th, 8th ... card.
+   nth-child(3n+3) means the 3rd, 6th, 9th ... card.
+   Every other card keeps the default navy top border. */
+.topic-grid .card:nth-child(3n+2) { border-top-color: var(--color-accent); }
+.topic-grid .card:nth-child(3n+2)::after { color: var(--color-accent); }
+.topic-grid .card:nth-child(3n+3) { border-top-color: var(--color-teal); }
+.topic-grid .card:nth-child(3n+3)::after { color: var(--color-teal); }
+
+/* White content box used across topic, help and about pages */
+.info-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  margin-top: var(--space-md);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.94rem;
+}
+.info-box ul, .info-box ol { margin: 0.4rem 0 0; padding-left: 1.4rem; }
+.info-box li { margin-bottom: 0.5rem; }
+.info-box li:last-child { margin-bottom: 0; }
+
+/* Pink "privacy" notice */
+.notice-box {
+  background: var(--color-accent-soft-bg);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-top: var(--space-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Amber "remember this" callout */
+.remember-line {
+  margin-top: var(--space-md);
+  background: var(--color-warning-bg);
+  border-left: 4px solid var(--color-warning-border);
+  color: var(--color-warning-text);
+  border-radius: var(--radius);
+  padding: 0.75rem 1.1rem;
+  font-size: 0.92rem;
+}
+
+/* Soft navy callout, e.g. "Has something already happened?" */
+.callout-help {
+  margin-top: var(--space-xl);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius);
+  padding: 1rem 1.3rem;
+}
+.callout-help a { color: var(--color-accent); font-weight: 700; }
+
+/* Numbered step cards - a CSS counter draws the circle, so the
+   template only needs a plain <ol>. */
+.steps {
+  /* counter-reset starts a counter called "step" at 0.
+     Each <li> adds 1 to it (counter-increment), and ::before prints it
+     inside a circle with content: counter(step). */
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  margin: var(--space-sm) 0 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.steps li {
+  counter-increment: step;
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem 0.85rem 3rem;
+  box-shadow: var(--shadow-sm);
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0.9rem;
+  top: 0.85rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.steps h3 { margin: 0 0 0.2rem; font-size: 0.98rem; }
+.steps p { margin: 0; color: var(--color-muted); font-size: 0.88rem; }
+
+/* External link list with a small "opens in a new tab" arrow */
+.channel-list { list-style: none; padding: 0 !important; margin-top: 0.4rem; }
+.channel-list li {
+  padding: 0.6rem 0;
+  margin: 0 !important;
+  border-bottom: 1px solid var(--color-border);
+}
+.channel-list li:last-child { border-bottom: none; }
+.channel-list a {
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+.channel-list a:hover { text-decoration: underline; }
+.channel-list a::after {
+  content: "\2197";
+  display: inline-block;
+  margin-left: 0.25rem;
+  font-weight: 400;
+}
+
+/* Two equal columns, stacked on small screens */
+.two-col {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: var(--space-md);
+}
+.two-col > * { margin-top: 0; }
+
+/* ------------------------------------------------------------------
+   6. Home page
+------------------------------------------------------------------- */
+/* linear-gradient blends from one colour to another. 135deg means it
+   runs diagonally, from top-left to bottom-right. */
+.hero {
+  background: linear-gradient(135deg, var(--color-primary-soft) 0%, #dcebee 100%);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-xl);
+}
+.hero h1 { font-size: 2.05rem; line-height: 1.15; max-width: 24ch; }
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: var(--space-md);
+}
+.hero-actions .button { margin-top: 0; }
+
+.steps-section { margin-top: var(--space-xl); }
+.home-notice { margin-top: var(--space-lg); }
+
+/* ------------------------------------------------------------------
+   7. Learn page
+------------------------------------------------------------------- */
+
+/* The rules card, kept to a comfortable reading width. It now sits
+   below the topic cards, so it needs space above it. */
+.learn-intro { max-width: 760px; margin-top: var(--space-xl); }
+
+.rules-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.3rem;
+  box-shadow: var(--shadow-sm);
+}
+.rules-card { border-top: 4px solid var(--color-accent); }
+.rules-intro { color: var(--color-muted); font-size: 0.92rem; }
+
+/* The eight rules: each one opens to show the reason */
+.rules-list {
+  counter-reset: rule;
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+.rules-list li {
+  counter-increment: rule;
+  border-top: 1px solid var(--color-border);
+}
+.rules-list li:first-child { border-top: none; }
+/* <details> and <summary> are built-in HTML: clicking the <summary>
+   opens and closes the rest. No JavaScript needed. */
+.rules-list summary {
+  position: relative;
+  list-style: none;              /* hides the default triangle */
+  cursor: pointer;
+  padding: 0.45rem 1.6rem 0.45rem 2.1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+}
+.rules-list summary::-webkit-details-marker { display: none; }
+.rules-list summary::before {
+  content: counter(rule);
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+.rules-list summary::after {
+  content: "+";
+  position: absolute;
+  right: 0.25rem;
+  top: 0.45rem;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+.rules-list details[open] summary::after { content: "\2212"; }  /* minus */
+.rules-list summary:hover { color: var(--color-accent); }
+.rules-list details p {
+  margin: 0 0 0.7rem 2.2rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+/* The topic cards below the rules */
+.topics-section { margin-top: var(--space-xl); }
+
+/* ------------------------------------------------------------------
+   8. Topic detail page
+------------------------------------------------------------------- */
+.topic-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1rem;
+  align-items: start;
+  margin-top: var(--space-md);
+}
+.topic-layout .info-box { margin-top: 0; }
+.topic-main { display: grid; gap: 1rem; }
+
+.example-box {
+  position: relative;
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem 1rem 2.2rem;
+  overflow: hidden;
+}
+.example-box::before {
+  content: "\201C";
+  position: absolute;
+  left: 0.5rem;
+  top: -0.4rem;
+  font-size: 4.5rem;
+  font-family: Georgia, "Times New Roman", serif;
+  color: rgba(14, 58, 76, 0.16);
+  line-height: 1;
+}
+/* Each invented example: a small label, then the message in italics.
+   "+" means "an example-item that comes straight after another one",
+   so space is added between examples but not above the first. */
+.example-item + .example-item { margin-top: 0.75rem; }
+.example-label {
+  margin: 0 0 0.1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+}
+.example-text { margin: 0; font-style: italic; font-size: 0.95rem; position: relative; }
+.example-note { margin-top: 0.85rem; font-size: 0.82rem; color: var(--color-muted); }
+
+.flag-box { border-top: 4px solid var(--color-accent); }
+
+.do-box, .dont-box, .help-box {
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  font-size: 0.94rem;
+  box-shadow: var(--shadow-sm);
+}
+.do-box   { background: var(--color-success-bg); border-left: 4px solid var(--color-success); }
+.dont-box { background: var(--color-accent-soft-bg); border-left: 4px solid var(--color-accent); }
+.help-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-teal);
+}
+.do-box h2   { color: var(--color-success-dark); }
+.dont-box h2 { color: var(--color-accent-dark); }
+.help-box h2 { color: var(--color-teal); }
+
+/* Tick, cross and dot drawn with CSS, so no images are needed */
+.do-list, .dont-list, .flag-list { list-style: none; padding: 0 !important; margin: 0.4rem 0 0; }
+.do-list li, .dont-list li, .flag-list li {
+  position: relative;
+  padding-left: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+.do-list li:last-child, .dont-list li:last-child, .flag-list li:last-child { margin-bottom: 0; }
+.do-list li::before {
+  content: "\2713";
+  position: absolute; left: 0; top: 0;
+  color: var(--color-success); font-weight: 700;
+}
+.dont-list li::before {
+  content: "\00D7";
+  position: absolute; left: 0; top: -0.1rem;
+  color: var(--color-accent); font-weight: 700; font-size: 1.15rem;
+}
+.flag-list li::before {
+  content: "";
+  position: absolute; left: 0.3rem; top: 0.6rem;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--color-accent);
+}
+
+/* ------------------------------------------------------------------
+   9. Get Help page
+   ------------------------------------------------------------------
+   Two parts: the steps in one card that works like the rules on the
+   Learn page, then one small card per contact.
+------------------------------------------------------------------- */
+
+/* The steps card. Everything else about it (the white box, the red
+   top line, the numbered rows and the + / - signs) comes from
+   .rules-card and .rules-list in section 7, the Learn page. */
+/* The small "checked" date under the contact cards */
+.help-checked { margin-top: 1rem; font-size: 0.82rem; color: var(--color-muted); }
+
+/* The contact cards. Same grid idea as the topic cards: as many
+   columns as fit, each at least 260px wide. */
+.contact-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  margin-top: var(--space-md);
+}
+.contact-card {
+  display: flex;                 /* stack the parts top to bottom ... */
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.15rem;
+  box-shadow: var(--shadow-sm);
+}
+.contact-card h3 { margin: 0 0 0.35rem; font-size: 1rem; }
+.contact-name { margin: 0 0 0.25rem; font-weight: 600; font-size: 0.93rem; }
+.contact-note { margin: 0; color: var(--color-muted); font-size: 0.88rem; }
+.contact-link {
+  margin-top: auto;              /* ... and push the link to the bottom, so
+                                    links line up across a row of cards */
+  padding-top: 0.75rem;
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.contact-link:hover { text-decoration: underline; }
+.contact-link::after { content: " \2197"; font-weight: 400; }   /* the "opens a new tab" arrow */
+
+/* ------------------------------------------------------------------
+   10. Footer
+------------------------------------------------------------------- */
+.site-footer {
+  margin-top: var(--space-xl);
+  background: var(--footer-bg);
+  color: var(--footer-text);
+}
+
+.footer-grid {
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: 2fr 1fr;    /* two parts: about the site, help numbers */
+  padding: 2.5rem 1.25rem 2rem;
+}
+
+.footer-logo {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.6rem;
+}
+.footer-logo span { color: #ff8fa3; }
+
+.footer-tagline {
+  color: var(--footer-text);
+  max-width: 32ch;
+  margin: 0;
+  font-size: 0.93rem;
+}
+
+.footer-col h3 {
+  color: #ffffff;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.85rem;
+}
+.footer-col ul { list-style: none; margin: 0; padding: 0; }
+.footer-col li { margin-bottom: 0.55rem; font-size: 0.93rem; color: var(--footer-text); }
+.footer-col a { color: var(--footer-text); text-decoration: none; }
+.footer-col a:hover, .footer-col a:focus-visible { color: #ffffff; text-decoration: underline; }
+.footer-small { font-size: 0.8rem; color: var(--footer-text-muted); }
+
+.footer-bottom { border-top: 1px solid var(--footer-border); }
+.footer-bottom-inner {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.footer-bottom-inner p {
+  margin: 0;
+  color: var(--footer-text-muted);
+  font-size: 0.8rem;
+}
+
+/* ------------------------------------------------------------------
+   11. Responsive rules
+   ------------------------------------------------------------------
+   "@media (max-width: 900px)" means: only use the rules inside when
+   the screen is 900px wide or narrower. This is how one page works on
+   a laptop, a tablet and a phone. Narrower screens come further down,
+   so their rules win when several apply.
+------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .hero { padding: var(--space-lg); }
+  .hero h1 { font-size: 1.85rem; }
+}
+
+@media (max-width: 760px) {
+  .topic-layout,
+  .two-col { grid-template-columns: 1fr; }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 2rem 1.25rem 1.5rem;
+  }
+  .footer-bottom-inner { flex-direction: column; }
+}
+
+@media (max-width: 700px) {
+  .nav-toggle { display: inline-block; }
+  .site-nav {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .site-nav.open { display: flex; }
+}
+
+@media (max-width: 600px) {
+  main.container { padding-top: 1.5rem; }
+  h1 { font-size: 1.55rem; }
+  .hero { padding: var(--space-md); }
+  .hero h1 { font-size: 1.6rem; max-width: none; }
+  .info-box, .example-box, .rules-card,
+  .do-box, .dont-box, .help-box { padding: 1.1rem 1.2rem; }
+  .card-grid { grid-template-columns: 1fr; gap: 0.75rem; }   /* one card per row */
+}
