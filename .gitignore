@@ -1,0 +1,6 @@
+# Files Git should not upload
+venv/
+__pycache__/
+*.pyc
+.env
+.vscode/
